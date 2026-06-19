@@ -385,48 +385,8 @@ body {
     pointer-events: none; /* Allow clicks to pass through to image underneath */
 }
 
-/* Styling for table with github and social links */
-
-#linksDiv{
-    background-color: #faebf6;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-#infoMenuTable td {
-    text-align:center;
-    border: 0;
-    padding: 10px;
-}
-  
-  #infoMenuTable{
-    table-layout: fixed;
-    margin: 0px;
-  }
-  
-  a, a:visited{
-    color:rgb(161, 50, 154);
-  }
-  
-.socialMediaButton{
-    color:rgb(161, 50, 154);
-    font-size: 26px;
-    margin: 0;
-    padding: 4px;
-    border: none;
-    min-width: 50px !important;
-    max-width: 50px !important;
-    max-height: 50px;
-    background-color: transparent;
-}
-  
-#buyMeACoffeeButton {
-    font-size: 10px;
-}
-
-.x-link {
-    text-decoration: none;
+a, a:visited {
+    color: rgb(161, 50, 154);
 }
 
 .example-image {

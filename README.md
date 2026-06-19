@@ -1,44 +1,36 @@
 # Sprite Sheet to GIF Converter
 
-A free web tool that converts sprite sheets into animated GIFs. Useful for video game developers and animators.
+A free web tool that converts sprite sheets into animated GIFs. Useful for game developers and animators.
 
-**Use it here: [https://collidingscopes.github.io/spritesheet-to-gif](https://collidingscopes.github.io/spritesheet-to-gif)**
+**Use it here: [https://ironexcavater.github.io/spritesheet-to-gif](https://ironexcavater.github.io/spritesheet-to-gif)**
 
-<img class="example-image" src="assets/siteOGImage.png"> 
-<img class="example-image" src="assets/sprite-animation.gif"> 
+<img src="assets/siteOGImage.png" width="400" alt="Sprite Sheet to GIF Converter screenshot">
+<img src="assets/sprite-animation.gif" width="200" alt="Example animated GIF output">
 
 ## Features
 
 - Upload any sprite sheet image
 - Configure rows and columns to extract frames
-- Adjust animation speed
-- Download generated GIF
+- Crop margins with offset controls before slicing frames
+- Adjust frame delay (animation speed)
+- Transparent areas in the source PNG are preserved as a transparent background in the generated GIF
+- Download the generated GIF
+- Runs entirely in the browser — no upload to a server, no account, no paywall
 
 ## Technologies
 
-- Pure HTML, CSS, and JavaScript
-- Uses [gif.js](https://github.com/jnordberg/gif.js) by Johan Nordberg for GIF generation
-- No server-side processing required
+- Pure HTML, CSS, and JavaScript — no build step
+- Uses [gif.js](https://github.com/jnordberg/gif.js) by Johan Nordberg for GIF encoding
 
-## Setup
-
-**Use it here: [https://collidingscopes.github.io/spritesheet-to-gif](https://collidingscopes.github.io/spritesheet-to-gif)**
-
-If you want to run this locally, simply clone the repository and open `index.html` in a browser:
+## Running locally
 
 ```bash
-git clone git@github.com:collidingScopes/spritesheet-to-gif.git
+git clone https://github.com/IronExcavater/spritesheet-to-gif.git
 cd spritesheet-to-gif
 ```
 
+Then open `index.html` directly in a browser, or serve the folder with any static file server.
+
 ## License
 
-MIT
-
-## Donations
-
-If you found this tool useful, feel free to buy me a coffee. My name is Alan and my passion is to build open source projects for animation, web games, and other pursuits.
-
-This would be much appreciated during late-night coding sessions
-
-<a href="https://www.buymeacoffee.com/stereodrift" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-yellow.png" alt="Buy Me A Coffee" height="41" width="174"></a>
+MIT — see [LICENSE](LICENSE).
