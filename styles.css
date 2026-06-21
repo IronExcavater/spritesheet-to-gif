@@ -10,18 +10,31 @@
     --dark-gray: #222222;
     --light-gray: #d1d1d1;
     --border-thick: 4px;
+    --border-thin: 2px;
     --box-shadow: 8px 8px 0px rgba(0, 0, 0, 0.9);
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type="number"] {
+    -moz-appearance: textfield;
+    appearance: textfield;
 }
 
 body {
     font-family: 'Space Mono', monospace;
     background-color: var(--off-white);
     color: var(--black);
-    max-width: 900px;
+    max-width: 1040px;
     margin: 0 auto;
     padding: 10px;
-    line-height: 1.4;
+    line-height: 1.3;
     letter-spacing: -0.3px;
+    position: relative;
 }
 
 h1, h2 {
@@ -30,148 +43,448 @@ h1, h2 {
     font-weight: 800;
     text-transform: uppercase;
     text-align: left;
-    margin-bottom: 1.2em;
+    margin-bottom: 0.6em;
     letter-spacing: -1px;
     position: relative;
 }
 
 h1 {
-    font-size: 2.8em;
-    margin-bottom: 0.8em;
+    font-size: 1.6em;
+    margin-bottom: 0.4em;
     border-bottom: var(--border-thick) solid var(--black);
-    padding-bottom: 0.3em;
+    padding-bottom: 0.2em;
     text-align: center;
-}
-
-h2 {
-    font-size: 1.8em;
-    margin-bottom: 0.8em;
 }
 
 .container {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 14px;
     background-color: var(--off-white);
-    padding: 30px;
+    padding: 18px;
     border: var(--border-thick) solid var(--black);
     box-shadow: var(--box-shadow);
     position: relative;
 }
 
+/* Original neo-brutalist decorative corner shapes - tucked behind the container
+   (z-index: -1) so they peek out past its edges rather than sitting on top of it. */
+.neo-deco {
+    position: absolute;
+    background-color: var(--accent);
+    border: var(--border-thick) solid var(--black);
+    z-index: -1;
+}
+
+.deco-square {
+    width: 40px;
+    height: 40px;
+    right: -20px;
+    top: -20px;
+}
+
+.deco-circle {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    left: -30px;
+    bottom: -30px;
+}
+
 /* Layout for side-by-side preview and controls */
 .main-layout {
     display: flex;
-    gap: 30px;
-    margin-bottom: 30px;
+    gap: 16px;
 }
 
 .controls-column {
     flex: 0 0 auto;
     display: flex;
     flex-direction: column;
-    gap: 20px;
-    width: 300px;
+    gap: 12px;
+    width: 220px;
 }
 
 .preview-column {
     flex: 1;
+    min-width: 0;
     display: flex;
     flex-direction: column;
 }
 
-/* Special treatment for file upload */
-#spriteUpload {
-    width: 100%;
-    box-sizing: border-box;
-    padding: 12px;
-    background-color: rgba(0, 194, 255, 0.3);
-    border: var(--border-thick) solid var(--black);
-    font-family: inherit;
-    cursor: pointer;
-    display: block;
-    margin-top: 5px;
+/* Special treatment for file upload: the native input is visually hidden but stays
+   focusable/keyboard-accessible, while its <label> is styled as the trigger button
+   (clicking/activating a label opens the file dialog for its associated input). The
+   label itself doubles as the sprite sheet preview slot - it's the big centered
+   "upload" prompt when empty, and shrinks into a small corner "replace" button once
+   an image (and the preview canvas) takes over the box. */
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
 }
 
-#spriteUpload:hover {
-    background-color: var(--accent);
-    transform: translate(-4px, -4px);
-    box-shadow: 4px 4px 0 var(--black);
-    transition: all 0.2s ease;
+#previewBox {
+    position: relative;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    min-height: 220px;
+    padding: 14px;
+    background-color: var(--light-gray);
+    border: var(--border-thick) solid var(--black);
+    box-shadow: var(--box-shadow);
+    transition: outline-color 0.15s ease;
+    outline: 3px dashed transparent;
+    outline-offset: -3px;
+}
+
+#previewBox.drag-over {
+    outline-color: var(--primary);
+    background-color: var(--off-white);
 }
 
 #spriteUploadLabel {
-    font-weight: bold;
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    background-color: var(--secondary);
+    border: var(--border-thick) solid var(--black);
+    color: var(--black);
+    font-family: 'Work Sans', sans-serif;
+    font-size: 1em;
+    font-weight: 800;
+    text-transform: uppercase;
+    text-align: center;
+    padding: 10px 16px;
+    margin: 0;
+    cursor: pointer;
+    box-shadow: var(--box-shadow);
+    transition: all 0.2s ease;
 }
 
-/* Grid layout for the parameter inputs */
+#spriteUploadLabel:hover {
+    background-color: var(--accent);
+    transform: translate(-4px, -4px);
+    box-shadow: 8px 8px 0 var(--black);
+}
+
+#spriteUploadLabel:active {
+    transform: translate(2px, 2px);
+    box-shadow: 4px 4px 0 var(--black);
+}
+
+#spriteUpload:focus-visible + #spriteUploadLabel {
+    outline: 3px solid var(--black);
+    outline-offset: 2px;
+}
+
+/* Once an image is loaded, the label no longer needs to fill the box - it shrinks
+   into a slim bar stacked above the preview instead of overlapping it. */
+#previewBox.has-image {
+    justify-content: flex-start;
+}
+
+#previewBox.has-image #spriteUploadLabel {
+    width: auto;
+    align-self: flex-end;
+    padding: 6px 12px;
+    margin-bottom: 8px;
+    font-size: 0.7em;
+    box-shadow: 4px 4px 0 var(--black);
+}
+
+#previewBox.has-image #spriteUploadLabel:hover {
+    box-shadow: 6px 6px 0 var(--black);
+}
+
+/* Grid layout for the parameter inputs. The label column is auto-sized to its
+   widest label and shared across every row (input-group is display:contents so its
+   two children become direct grid items here), instead of each row independently
+   splitting 50/50 - keeps labels of very different lengths (ROWS vs TRANSPARENCY)
+   visually aligned in a column that isn't wider than it needs to be. */
 .param-grid {
     display: grid;
-    grid-template-columns: 1fr;
-    gap: 10px;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 7px 8px;
     background-color: var(--light-gray);
-    padding: 15px;
+    padding: 10px;
     border: var(--border-thick) solid var(--black);
     box-shadow: var(--box-shadow);
     width: 100%;
     box-sizing: border-box;
-    max-height: 500px;
-    overflow-y: auto;
-}
-
-/* Two-column layout for individual input groups */
-.param-grid .input-group {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    align-items: center;
-    gap: 5px;
 }
 
 .param-grid label {
     font-weight: 700;
     color: var(--black);
     text-transform: uppercase;
-    font-size: 0.9em;
+    font-size: 0.75em;
     margin: 0;
     justify-self: start;
+    white-space: nowrap;
 }
 
-.param-grid input[type="number"] {
+.param-grid input[type="number"],
+.param-grid select {
     width: 100%;
-    padding: 8px;
+    padding: 6px;
     box-sizing: border-box;
     border: var(--border-thick) solid var(--black);
     font-family: inherit;
     background-color: var(--off-white);
     font-weight: bold;
-    font-size: 1.1em;
+    font-size: 0.9em;
     justify-self: end;
 }
 
-.param-grid input[type="number"]:focus {
+.param-grid select {
+    text-transform: uppercase;
+    cursor: pointer;
+    font-size: 0.78em;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    appearance: none;
+    padding-right: 18px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='black'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 6px center;
+    background-size: 8px 5px;
+}
+
+.param-grid input[type="color"] {
+    width: 100%;
+    height: 30px;
+    padding: 0;
+    box-sizing: border-box;
+    border: var(--border-thick) solid var(--black);
+    background-color: var(--off-white);
+    cursor: pointer;
+}
+
+.param-grid input[type="color"]::-webkit-color-swatch-wrapper {
+    padding: 0;
+}
+
+.param-grid input[type="color"]::-webkit-color-swatch {
+    border: none;
+}
+
+.param-grid input[type="color"]::-moz-color-swatch {
+    border: none;
+}
+
+.param-grid input[type="color"]:disabled {
+    cursor: not-allowed;
+    opacity: 0.4;
+}
+
+.param-grid input[type="number"]:focus,
+.param-grid select:focus {
     outline: none;
     background-color: var(--accent);
-    transform: translate(-4px, -4px);
-    box-shadow: 4px 4px 0 var(--black);
 }
 
-/* Group the offset controls visually */
-.param-grid .input-group:nth-child(n+4) {
+/* Custom toggle switch replacing the bare checkbox - a sliding pill reads more
+   clearly as an on/off state than a small native checkbox, and matches the rest of
+   the UI's bold bordered style. The real checkbox stays in the DOM (so existing
+   change-event wiring keeps working) but is visually hidden behind the track/thumb. */
+.switch {
+    justify-self: end;
     position: relative;
+    display: inline-block;
+    width: 56px;
+    height: 30px;
+    cursor: pointer;
 }
 
-.param-grid .input-group:nth-child(4)::before {
-    content: "FRAME OFFSETS (PX)";
-    display: block;
-    grid-column: 1 / -1;
-    margin-top: 0px;
-    margin-bottom: 0px;
-    font-weight: 800;
+.switch input {
+    position: absolute;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    cursor: pointer;
+}
+
+.switch-track {
+    position: absolute;
+    inset: 0;
+    box-sizing: border-box;
+    background-color: var(--off-white);
+    border: var(--border-thick) solid var(--black);
+    transition: background-color 0.15s ease;
+}
+
+.switch-thumb {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 18px;
+    height: 18px;
+    background-color: var(--black);
+    transition: transform 0.15s ease;
+}
+
+.switch input:checked ~ .switch-track {
+    background-color: var(--primary);
+}
+
+.switch input:checked ~ .switch-track .switch-thumb {
+    transform: translateX(26px);
+}
+
+.switch input:focus-visible ~ .switch-track {
+    outline: 2px solid var(--black);
+    outline-offset: 2px;
+}
+
+/* Custom number-input steppers, replacing the inconsistent native browser spinner.
+   The full -/+ variant sits either side of the input; the compact variant stacks
+   tiny up/down arrows to its right for inputs packed tightly together (offsets). */
+.number-stepper {
+    grid-column: 2;
+    justify-self: end;
+    display: flex;
+    width: 100%;
+    border: var(--border-thick) solid var(--black);
+    background-color: var(--off-white);
+}
+
+.number-stepper input[type="number"] {
+    flex: 1;
+    min-width: 0;
+    border: none;
     text-align: center;
-    color: var(--black);
+}
+
+.number-stepper input[type="number"]:focus {
+    transform: none;
+    box-shadow: none;
+}
+
+.stepper-btn {
+    all: unset;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    background-color: var(--secondary);
+    border-left: var(--border-thin) solid var(--black);
+    font-weight: 800;
+    font-size: 0.85em;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.number-stepper .stepper-dec {
+    border-left: none;
+    border-right: var(--border-thin) solid var(--black);
+}
+
+/* Buttons inherit transform/box-shadow from the global button:hover/:active rules
+   (those apply by element type, independent of the all:unset reset above) - cancel
+   them out here so the tiny stepper buttons don't jump or grow a huge shadow. */
+.stepper-btn:hover {
     background-color: var(--accent);
-    padding: 5px;
-    border: 2px solid var(--black);
+    transform: none;
+    box-shadow: none;
+}
+
+.stepper-btn:active {
+    background-color: var(--primary);
+    transform: none;
+    box-shadow: none;
+}
+
+.number-stepper-compact {
+    align-items: stretch;
+}
+
+.stepper-stack {
+    display: flex;
+    flex-direction: column;
+    width: 18px;
+}
+
+.stepper-stack .stepper-btn {
+    width: 100%;
+    flex: 1;
+    font-size: 0.55em;
+    border-left: var(--border-thin) solid var(--black);
+}
+
+.stepper-stack .stepper-up {
+    border-bottom: var(--border-thin) solid var(--black);
+}
+
+/* Compact 4-up layout for the crop offset controls, replacing four full label/input
+   rows with one block. Spans both param-grid columns since it isn't a label/input
+   pair like the other rows. TOP/BOTTOM/LEFT/RIGHT sub-labels give enough context on
+   their own, so this doesn't need its own heading. */
+.offset-grid {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 5px;
+    background-color: var(--accent);
+    border: var(--border-thin) solid var(--black);
+    padding: 6px 8px;
+}
+
+.offset-field {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+}
+
+.offset-field label {
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.65em;
+}
+
+.offset-field input[type="number"] {
+    width: 100%;
+    padding: 4px 2px;
+    box-sizing: border-box;
+    font-family: inherit;
+    background-color: var(--off-white);
+    font-weight: bold;
+    font-size: 0.8em;
+    text-align: center;
+}
+
+.offset-field .number-stepper {
+    border: var(--border-thin) solid var(--black);
+}
+
+.offset-field .number-stepper input[type="number"] {
+    border: none;
+}
+
+.offset-field .stepper-stack {
+    width: 14px;
+}
+
+.offset-field .stepper-btn {
+    font-size: 0.5em;
+}
+
+.offset-field input[type="number"]:focus {
+    outline: none;
 }
 
 /* Responsive layout for smaller screens */
@@ -179,7 +492,7 @@ h2 {
     .main-layout {
         flex-direction: column;
     }
-    
+
     .controls-column {
         width: 100%;
     }
@@ -189,18 +502,18 @@ button {
     background-color: var(--primary);
     border: var(--border-thick) solid var(--black);
     color: var(--black);
-    padding: 14px 20px;
+    padding: 10px 16px;
     text-align: center;
     font-family: 'Work Sans', sans-serif;
-    font-size: 1.1em;
+    font-size: 1em;
     font-weight: 800;
     text-transform: uppercase;
-    margin: 4px 2px;
+    margin: 3px 2px;
     cursor: pointer;
     box-shadow: var(--box-shadow);
     transition: all 0.2s ease;
     align-self: center;
-    min-width: 200px;
+    min-width: 160px;
 }
 
 button:hover {
@@ -222,16 +535,25 @@ button:disabled {
     box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.3);
 }
 
+/* The main CTA buttons stretch to fill their (now narrower) column instead of
+   floating as a centered min-width pill - reads better in the compact layout. */
+#generateBtn,
+.download-btn {
+    width: 100%;
+    min-width: 0;
+    align-self: stretch;
+    margin: 0;
+}
+
 .preview {
     max-width: 100%;
-    margin-top: 15px;
     object-fit: contain;
-    max-height: 400px;
+    max-height: 340px;
 }
 
 #gifOutput {
     border: var(--border-thick) solid var(--black);
-    margin-top: 15px;
+    margin-top: 10px;
     box-shadow: var(--box-shadow);
     max-width: 100%;
 }
@@ -242,7 +564,7 @@ button:disabled {
 
 .download-btn {
     background-color: var(--secondary);
-    margin-top: 25px;
+    margin-top: 14px;
 }
 
 .download-btn:hover {
@@ -266,110 +588,63 @@ progress::-webkit-progress-value {
     background: var(--primary);
 }
 
-#framePreview {
-    margin-top: 20px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    justify-content: center;
+/* A floating toast rather than an inline block, so it doesn't push the rest of the
+   controls column around while it's shown - see the auto-dismiss timeout in script. */
+.status {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    max-width: 280px;
+    padding: 12px 16px;
+    background-color: var(--accent);
+    text-align: center;
+    font-weight: 700;
+    font-size: 0.85em;
+    border: var(--border-thick) solid var(--black);
+    box-shadow: var(--box-shadow);
+    z-index: 100;
 }
 
-#framePreview img {
+/* Extracted frames and the generated GIF sit side by side instead of stacked */
+.output-row {
+    display: flex;
+    gap: 14px;
+}
+
+.output-panel {
+    flex: 1;
+    min-width: 0;
+    box-sizing: border-box;
+    padding: 12px;
+    background-color: var(--light-gray);
+    border: var(--border-thick) solid var(--black);
+    box-shadow: var(--box-shadow);
+}
+
+@media (max-width: 800px) {
+    .output-row {
+        flex-direction: column;
+    }
+}
+
+.frame-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    max-height: 280px;
+    overflow-y: auto;
+}
+
+.frame-grid img {
     border: 3px solid var(--black);
-    max-height: 100px;
+    max-height: 90px;
     transition: all 0.2s ease;
     box-shadow: 4px 4px 0 var(--black);
 }
 
-#framePreview img:hover {
+.frame-grid img:hover {
     transform: translate(-4px, -4px);
     box-shadow: 8px 8px 0 var(--black);
-}
-
-.status {
-    padding: 15px;
-    margin-top: 15px;
-    background-color: var(--accent);
-    text-align: center;
-    font-weight: 700;
-    border: var(--border-thick) solid var(--black);
-    box-shadow: var(--box-shadow);
-}
-
-.section-header {
-    display: flex;
-    align-items: center;
-    margin-bottom: 20px;
-    background-color: var(--secondary);
-    padding: 10px 20px;
-    border: var(--border-thick) solid var(--black);
-    box-shadow: var(--box-shadow);
-    width: 100%;
-    box-sizing: border-box;
-    margin-left: -10px;
-}
-
-.section-header h2 {
-    margin: 0;
-    text-align: center;
-    width: 100%;
-    color: var(--black);
-    font-size: 1.5em;
-}
-
-#previewContainer {
-    border: var(--border-thick) solid var(--black);
-    padding: 30px;
-    box-shadow: var(--box-shadow);
-    background-color: var(--light-gray);
-    height: 100%;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-}
-
-#resultContainer {
-    border: var(--border-thick) solid var(--black);
-    padding: 30px;
-    box-shadow: var(--box-shadow);
-    margin-top: 25px;
-    background-color: var(--light-gray);
-    order: 2;
-}
-
-#framePreview {
-    order: 3;
-    margin-top: 40px;
-}
-
-/* Custom decorative elements for neo-brutalism */
-.neo-deco {
-    position: absolute;
-    background-color: var(--accent);
-    border: var(--border-thick) solid var(--black);
-    z-index: -1;
-}
-
-.deco-square {
-    width: 40px;
-    height: 40px;
-    right: -20px;
-    top: -20px;
-}
-
-.deco-circle {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    left: -30px;
-    bottom: -30px;
-}
-
-/* Clean background */
-body {
-    background-image: none;
-    position: relative;
-    background-color: var(--off-white);
 }
 
 /* Add styles for the preview overlay container */
@@ -387,9 +662,4 @@ body {
 
 a, a:visited {
     color: rgb(161, 50, 154);
-}
-
-.example-image {
-    width: min(80%, 400px);
-    height: auto;
 }

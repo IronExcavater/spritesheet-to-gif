@@ -4,16 +4,14 @@ A free web tool that converts sprite sheets into animated GIFs. Useful for game 
 
 **Use it here: [https://ironexcavater.github.io/spritesheet-to-gif](https://ironexcavater.github.io/spritesheet-to-gif)**
 
-<img src="assets/siteOGImage.png" width="400" alt="Sprite Sheet to GIF Converter screenshot">
-<img src="assets/sprite-animation.gif" width="200" alt="Example animated GIF output">
-
 ## Features
 
-- Upload any sprite sheet image
+- Upload any sprite sheet image, including via drag-and-drop
 - Configure rows and columns to extract frames
 - Crop margins with offset controls before slicing frames
-- Adjust frame delay (animation speed)
-- Transparent areas in the source PNG are preserved as a transparent background in the generated GIF
+- Adjust frame delay (animation speed) and encoding quality
+- Choose whether the GIF loops forever or plays once
+- Transparent areas in the source PNG are preserved as a transparent background in the generated GIF, or filled with a custom background color
 - Download the generated GIF
 - Runs entirely in the browser — no upload to a server, no account, no paywall
 

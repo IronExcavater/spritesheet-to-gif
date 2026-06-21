@@ -24,116 +24,116 @@
     <meta property="twitter:image" content="https://raw.githubusercontent.com/IronExcavater/spritesheet-to-gif/main/assets/siteOGImage.png">
 
     <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script src="gif.js"></script>
 </head>
 <body>
-    <h1>SPRITE SHEET TO GIF 👾</h1>
-    
+    <h1>SPRITE SHEET TO GIF</h1>
+
     <div class="container">
-        <!-- Neo-brutalist decorative elements -->
         <div class="neo-deco deco-square"></div>
         <div class="neo-deco deco-circle"></div>
-    
-        <div class="input-group">
-            <label for="spriteUpload" id="spriteUploadLabel">UPLOAD SPRITE SHEET 👇</label>
-            <input type="file" id="spriteUpload" accept="image/*">
-        </div>
-        
         <div class="main-layout">
             <div class="controls-column">
                 <div class="param-grid">
-                    <div class="input-group">
-                        <label for="rows">NUMBER OF ROWS</label>
-                        <input type="number" id="rows" value="4" min="1">
+                    <label for="rows">ROWS</label>
+                    <input type="number" id="rows" value="4" min="1">
+
+                    <label for="cols">COLUMNS</label>
+                    <input type="number" id="cols" value="4" min="1">
+
+                    <label for="frameDelay">DELAY (MS)</label>
+                    <input type="number" id="frameDelay" value="150" min="10">
+
+                    <label for="quality">QUALITY</label>
+                    <select id="quality">
+                        <option value="20">FAST</option>
+                        <option value="10" selected>BALANCED</option>
+                        <option value="1">BEST</option>
+                    </select>
+
+                    <label for="loopMode">LOOP</label>
+                    <select id="loopMode">
+                        <option value="0" selected>FOREVER</option>
+                        <option value="-1">PLAY ONCE</option>
+                    </select>
+
+                    <label for="transparencyToggle">TRANSPARENCY</label>
+                    <label class="switch">
+                        <input type="checkbox" id="transparencyToggle" checked>
+                        <span class="switch-track"><span class="switch-thumb"></span></span>
+                    </label>
+
+                    <label for="backgroundColor">BACKGROUND</label>
+                    <input type="color" id="backgroundColor" value="#ffffff" disabled>
+
+                    <div class="offset-grid">
+                        <div class="offset-field">
+                            <label for="offsetTop">TOP</label>
+                            <input type="number" id="offsetTop" value="0" min="0">
+                        </div>
+                        <div class="offset-field">
+                            <label for="offsetBottom">BOTTOM</label>
+                            <input type="number" id="offsetBottom" value="0" min="0">
+                        </div>
+                        <div class="offset-field">
+                            <label for="offsetLeft">LEFT</label>
+                            <input type="number" id="offsetLeft" value="0" min="0">
+                        </div>
+                        <div class="offset-field">
+                            <label for="offsetRight">RIGHT</label>
+                            <input type="number" id="offsetRight" value="0" min="0">
+                        </div>
                     </div>
-                    
-                    <div class="input-group">
-                        <label for="cols">NUMBER OF COLUMNS</label>
-                        <input type="number" id="cols" value="4" min="1">
-                    </div>
-                    
-                    <div class="input-group">
-                        <label for="frameDelay">FRAME DELAY (MS)</label>
-                        <input type="number" id="frameDelay" value="150" min="10">
-                    </div>
-                    
-                    <div class="input-group">
-                        <label for="offsetTop">OFFSET TOP</label>
-                        <input type="number" id="offsetTop" value="0" min="0">
-                    </div>
-                    
-                    <div class="input-group">
-                        <label for="offsetBottom">OFFSET BOTTOM</label>
-                        <input type="number" id="offsetBottom" value="0" min="0">
-                    </div>
-                    
-                    <div class="input-group">
-                        <label for="offsetLeft">OFFSET LEFT</label>
-                        <input type="number" id="offsetLeft" value="0" min="0">
-                    </div>
-                    
-                    <div class="input-group">
-                        <label for="offsetRight">OFFSET RIGHT</label>
-                        <input type="number" id="offsetRight" value="0" min="0">
-                    </div>
-                    
                 </div>
-                
-                <button id="generateBtn" disabled>GENERATE GIF 🔮</button>
+
+                <button id="generateBtn" type="button" disabled>GENERATE GIF</button>
                 <div id="statusText" class="status hidden"></div>
                 <progress id="progressBar" value="0" max="100" class="hidden"></progress>
             </div>
-            
+
             <div class="preview-column">
-                <div id="previewContainer" class="hidden">
-                    <div class="section-header">
-                        <h2>SPRITE SHEET PREVIEW</h2>
-                    </div>
-                    <div class="preview-wrapper">
-                        <img id="spritePreview" class="preview">
+                <div id="previewBox">
+                    <input type="file" id="spriteUpload" accept="image/*" class="visually-hidden">
+                    <label for="spriteUpload" id="spriteUploadLabel">UPLOAD SPRITE SHEET</label>
+                    <div id="previewWrapper" class="preview-wrapper hidden">
+                        <img id="spritePreview" class="preview" alt="Sprite sheet preview">
                         <canvas id="spritePreviewOverlay" class="preview"></canvas>
                     </div>
                 </div>
             </div>
         </div>
-        
-        <div id="resultContainer" class="hidden">
-            <div class="section-header">
-                <h2>GENERATED GIF</h2>
+
+        <div class="output-row">
+            <div id="framePreview" class="output-panel hidden">
+                <div id="frameGrid" class="frame-grid"></div>
             </div>
-            <img id="gifOutput">
-            <a id="downloadLink" class="hidden">
-                <button class="download-btn">DOWNLOAD GIF</button>
-            </a>
-        </div>
-        
-        <div id="framePreview" class="hidden">
-            <div class="section-header">
-                <h2>EXTRACTED FRAMES</h2>
+
+            <div id="resultContainer" class="output-panel hidden">
+                <img id="gifOutput" alt="Generated GIF preview">
+                <a id="downloadLink" class="hidden">
+                    <button class="download-btn" type="button">DOWNLOAD GIF</button>
+                </a>
             </div>
-            <!-- Frames will be added here -->
         </div>
     </div>
-    
+
     <canvas id="tempCanvas" class="hidden"></canvas>
 
     <div id="notesDiv">
-        <div id="textBox">
-            <h2 id="aboutText">About</h2>
-            <p>Converts a sprite sheet image into an animated GIF. Upload an image, set the row/column count, frame delay, and crop offsets, then generate and download the result.</p>
-            <p>Transparent areas in the source PNG are preserved as a transparent background in the generated GIF.</p>
-            <p>Open source under the MIT license.</p>
-        </div>
+        <p>Converts a sprite sheet image into an animated GIF. Upload an image, set the row/column count, frame delay, and crop offsets, then generate and download the result.</p>
+        <p>Transparent areas in the source PNG are preserved as a transparent background in the generated GIF, unless turned off with the transparency toggle.</p>
+        <p>Open source under the MIT license.</p>
     </div>
 
     <script>
         // DOM Elements
         const spriteUpload = document.getElementById('spriteUpload');
+        const spriteUploadLabel = document.getElementById('spriteUploadLabel');
         const generateBtn = document.getElementById('generateBtn');
         const spritePreview = document.getElementById('spritePreview');
         const spritePreviewOverlay = document.getElementById('spritePreviewOverlay');
-        const previewContainer = document.getElementById('previewContainer');
+        const previewBox = document.getElementById('previewBox');
+        const previewWrapper = document.getElementById('previewWrapper');
         const resultContainer = document.getElementById('resultContainer');
         const gifOutput = document.getElementById('gifOutput');
         const downloadLink = document.getElementById('downloadLink');
@@ -141,31 +141,52 @@
         const progressBar = document.getElementById('progressBar');
         const statusText = document.getElementById('statusText');
         const framePreview = document.getElementById('framePreview');
-        
+        const frameGrid = document.getElementById('frameGrid');
+
         // Form inputs
         const rowsInput = document.getElementById('rows');
         const colsInput = document.getElementById('cols');
         const frameDelayInput = document.getElementById('frameDelay');
-        
+        const qualityInput = document.getElementById('quality');
+        const loopModeInput = document.getElementById('loopMode');
+        const transparencyToggle = document.getElementById('transparencyToggle');
+        const backgroundColorInput = document.getElementById('backgroundColor');
+
         // Offset inputs
         const offsetTopInput = document.getElementById('offsetTop');
         const offsetBottomInput = document.getElementById('offsetBottom');
         const offsetLeftInput = document.getElementById('offsetLeft');
         const offsetRightInput = document.getElementById('offsetRight');
-        
+
         // Variables
         let spriteSheet = null;
-        
-        // Example spritesheet path
-        const exampleSpritesheetPath = 'assets/example-spritesheet.png';
-        
+        let hasGenerated = false;
+        let statusHideTimeout = null;
+
         // Event listeners
         spriteUpload.addEventListener('change', handleSpriteUpload);
         generateBtn.addEventListener('click', generateGif);
-        
-        // Load example spritesheet on page load
-        window.addEventListener('DOMContentLoaded', loadExampleSpritesheet);
-        
+
+        // The background-fill color only matters when transparency is off (it's what
+        // shows through where the source had transparent pixels), so keep it disabled
+        // otherwise rather than letting users set a value that has no effect.
+        transparencyToggle.addEventListener('change', () => {
+            backgroundColorInput.disabled = transparencyToggle.checked;
+        });
+
+        // Dropping an image anywhere on the preview box uploads it, same as picking one
+        // via the file dialog.
+        previewBox.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            previewBox.classList.add('drag-over');
+        });
+        previewBox.addEventListener('dragleave', () => previewBox.classList.remove('drag-over'));
+        previewBox.addEventListener('drop', (e) => {
+            e.preventDefault();
+            previewBox.classList.remove('drag-over');
+            loadImageFile(e.dataTransfer.files[0]);
+        });
+
         // Add event listeners for real-time grid updates
         rowsInput.addEventListener('input', updateGridLines);
         colsInput.addEventListener('input', updateGridLines);
@@ -173,95 +194,280 @@
         offsetBottomInput.addEventListener('input', updateGridLines);
         offsetLeftInput.addEventListener('input', updateGridLines);
         offsetRightInput.addEventListener('input', updateGridLines);
-        
+        window.addEventListener('resize', updateGridLines);
+
+        // Snap each field back to a valid value once the user is done editing it
+        // (rather than fighting them mid-keystroke), and refresh the other fields'
+        // min/max since offsets and slice counts constrain each other.
+        [rowsInput, colsInput, offsetTopInput, offsetBottomInput, offsetLeftInput, offsetRightInput]
+            .forEach(input => input.addEventListener('change', () => {
+                updateInputConstraints();
+                updateGridLines();
+            }));
+
         function handleSpriteUpload(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            
+            loadImageFile(event.target.files[0]);
+        }
+
+        function loadImageFile(file) {
+            if (!file || !file.type.startsWith('image/')) return;
+
             const reader = new FileReader();
             reader.onload = function(e) {
                 const img = new Image();
                 img.onload = function() {
-                    spriteSheet = img;
-                    spritePreview.src = img.src;
-                    previewContainer.classList.remove('hidden');
-                    generateBtn.disabled = false;
-                    
-                    // Set up the overlay canvas to match the sprite sheet size
-                    spritePreviewOverlay.width = img.width;
-                    spritePreviewOverlay.height = img.height;
-                    
-                    // Draw the grid lines after image is loaded
-                    updateGridLines();
-                    
-                    // Clear previous results
-                    resultContainer.classList.add('hidden');
-                    framePreview.innerHTML = '<div class="section-header"><h2>EXTRACTED FRAMES</h2></div>';
-                    framePreview.classList.add('hidden');
+                    displaySpriteSheet(img);
                 };
                 img.src = e.target.result;
             };
             reader.readAsDataURL(file);
         }
-        
-        function updateGridLines() {
+
+        // Replaces the browser's native number-input spinner (inconsistent across
+        // browsers and visually at odds with the rest of the UI) with a custom stepper.
+        // `compact` stacks tiny up/down arrows instead of side-by-side -/+ buttons, for
+        // inputs packed tightly together (the offset grid).
+        function attachStepper(input, { step = 1, compact = false } = {}) {
+            const wrapper = document.createElement('div');
+            wrapper.className = compact ? 'number-stepper number-stepper-compact' : 'number-stepper';
+            input.parentNode.insertBefore(wrapper, input);
+            wrapper.appendChild(input);
+
+            function bump(delta) {
+                const min = input.min !== '' ? parseFloat(input.min) : -Infinity;
+                const max = input.max !== '' ? parseFloat(input.max) : Infinity;
+                const cur = parseFloat(input.value) || 0;
+                input.value = Math.min(max, Math.max(min, cur + delta));
+                input.dispatchEvent(new Event('input', { bubbles: true }));
+                input.dispatchEvent(new Event('change', { bubbles: true }));
+            }
+
+            if (compact) {
+                const stack = document.createElement('div');
+                stack.className = 'stepper-stack';
+                const up = document.createElement('button');
+                up.type = 'button';
+                up.className = 'stepper-btn stepper-up';
+                up.textContent = '▲';
+                const down = document.createElement('button');
+                down.type = 'button';
+                down.className = 'stepper-btn stepper-down';
+                down.textContent = '▼';
+                up.addEventListener('click', () => bump(step));
+                down.addEventListener('click', () => bump(-step));
+                stack.appendChild(up);
+                stack.appendChild(down);
+                wrapper.appendChild(stack);
+            } else {
+                const dec = document.createElement('button');
+                dec.type = 'button';
+                dec.className = 'stepper-btn stepper-dec';
+                dec.textContent = '−';
+                const inc = document.createElement('button');
+                inc.type = 'button';
+                inc.className = 'stepper-btn stepper-inc';
+                inc.textContent = '+';
+                dec.addEventListener('click', () => bump(-step));
+                inc.addEventListener('click', () => bump(step));
+                wrapper.insertBefore(dec, input);
+                wrapper.appendChild(inc);
+            }
+        }
+
+        attachStepper(rowsInput);
+        attachStepper(colsInput);
+        attachStepper(frameDelayInput, { step: 10 });
+        attachStepper(offsetTopInput, { compact: true });
+        attachStepper(offsetBottomInput, { compact: true });
+        attachStepper(offsetLeftInput, { compact: true });
+        attachStepper(offsetRightInput, { compact: true });
+
+        function displaySpriteSheet(img) {
+            spriteSheet = img;
+            spritePreview.src = img.src;
+            previewWrapper.classList.remove('hidden');
+            previewBox.classList.add('has-image');
+            spriteUploadLabel.textContent = 'REPLACE IMAGE';
+            generateBtn.disabled = false;
+
+            // Draw the grid lines after image is loaded
+            updateInputConstraints();
+            updateGridLines();
+
+            // A newly loaded image hasn't been generated yet, so the button should
+            // read "generate" again rather than "regenerate" from the previous image.
+            hasGenerated = false;
+            generateBtn.textContent = 'GENERATE GIF';
+
+            // Clear previous results
+            resultContainer.classList.add('hidden');
+            frameGrid.innerHTML = '';
+            framePreview.classList.add('hidden');
+        }
+
+        // Below this many native pixels, a frame is too small to ever render as a
+        // legible grid cell - bandage for the high-slice-count misalignment complaint:
+        // rather than trying to perfectly render sub-pixel-thin grid lines, just don't
+        // let rows/cols get pushed that far in the first place.
+        const MIN_FRAME_PX = 4;
+
+        // Keeps each input's min/max in sync with the loaded sprite sheet so a slice
+        // count or crop offset can never be entered that would produce a degenerate
+        // (sub-MIN_FRAME_PX) frame.
+        function updateInputConstraints() {
             if (!spriteSheet) return;
-            
-            // Get current rows and columns values
-            const rows = parseInt(rowsInput.value) || 4;
-            const cols = parseInt(colsInput.value) || 4;
-            
-            // Get offset values
+
             const offsetTop = parseInt(offsetTopInput.value) || 0;
             const offsetBottom = parseInt(offsetBottomInput.value) || 0;
             const offsetLeft = parseInt(offsetLeftInput.value) || 0;
             const offsetRight = parseInt(offsetRightInput.value) || 0;
-            
-            // Calculate effective dimensions after offsets
-            const effectiveWidth = spriteSheet.width - offsetLeft - offsetRight;
-            const effectiveHeight = spriteSheet.height - offsetTop - offsetBottom;
-            
-            // Calculate frame dimensions
+
+            offsetTopInput.max = Math.max(0, spriteSheet.height - offsetBottom - 1);
+            offsetBottomInput.max = Math.max(0, spriteSheet.height - offsetTop - 1);
+            offsetLeftInput.max = Math.max(0, spriteSheet.width - offsetRight - 1);
+            offsetRightInput.max = Math.max(0, spriteSheet.width - offsetLeft - 1);
+
+            const effectiveWidth = Math.max(1, spriteSheet.width - offsetLeft - offsetRight);
+            const effectiveHeight = Math.max(1, spriteSheet.height - offsetTop - offsetBottom);
+
+            rowsInput.max = Math.max(1, Math.floor(effectiveHeight / MIN_FRAME_PX));
+            colsInput.max = Math.max(1, Math.floor(effectiveWidth / MIN_FRAME_PX));
+
+            [rowsInput, colsInput, offsetTopInput, offsetBottomInput, offsetLeftInput, offsetRightInput]
+                .forEach(input => {
+                    const min = parseInt(input.min) || 0;
+                    const max = parseInt(input.max);
+                    const value = parseInt(input.value) || min;
+                    input.value = Math.min(Math.max(value, min), max);
+                });
+        }
+
+        // Single source of truth for how the sprite sheet gets sliced, shared by the
+        // preview grid and the actual GIF export so they can never disagree. Rows/cols
+        // are clamped to the image's effective size so a frame is always at least 1px.
+        // frameWidth/frameHeight are floored because every extracted frame must be the
+        // same pixel size (a GIF has one fixed width/height for all its frames), which
+        // means usedWidth/usedHeight can be a few pixels smaller than effectiveWidth/
+        // effectiveHeight when cols/rows don't divide evenly - that leftover sliver is
+        // never sliced into a frame.
+        function getSliceParams() {
+            const offsetTop = parseInt(offsetTopInput.value) || 0;
+            const offsetBottom = parseInt(offsetBottomInput.value) || 0;
+            const offsetLeft = parseInt(offsetLeftInput.value) || 0;
+            const offsetRight = parseInt(offsetRightInput.value) || 0;
+
+            const effectiveWidth = Math.max(1, spriteSheet.width - offsetLeft - offsetRight);
+            const effectiveHeight = Math.max(1, spriteSheet.height - offsetTop - offsetBottom);
+
+            const rows = Math.min(Math.max(parseInt(rowsInput.value) || 1, 1), effectiveHeight);
+            const cols = Math.min(Math.max(parseInt(colsInput.value) || 1, 1), effectiveWidth);
+
             const frameWidth = Math.floor(effectiveWidth / cols);
             const frameHeight = Math.floor(effectiveHeight / rows);
-            
-            // Get canvas context and clear previous drawings
+
+            return {
+                offsetTop, offsetBottom, offsetLeft, offsetRight,
+                effectiveWidth, effectiveHeight,
+                rows, cols, frameWidth, frameHeight,
+                usedWidth: cols * frameWidth,
+                usedHeight: rows * frameHeight
+            };
+        }
+
+        // Previously this canvas's backing store was set to the sprite sheet's native
+        // resolution and left for the browser to shrink via CSS down to the displayed
+        // size. That downscale is done with bilinear filtering, which blurs/shifts thin
+        // 1px grid lines unpredictably - the real cause of lines looking "misaligned" at
+        // high slice counts. Fixing it properly: size the backing store to match the
+        // *displayed* resolution (times devicePixelRatio for sharpness) and scale our own
+        // drawing math into that space, so the browser never has to resample the canvas.
+        function updateGridLines() {
+            if (!spriteSheet) return;
+
+            const {
+                offsetTop, offsetBottom, offsetLeft, offsetRight,
+                effectiveWidth, effectiveHeight,
+                rows, cols, frameWidth, frameHeight,
+                usedWidth, usedHeight
+            } = getSliceParams();
+
+            const displayWidth = spritePreview.clientWidth;
+            const displayHeight = spritePreview.clientHeight;
+            if (!displayWidth || !displayHeight) return;
+
+            const dpr = window.devicePixelRatio || 1;
+            const backingWidth = Math.round(displayWidth * dpr);
+            const backingHeight = Math.round(displayHeight * dpr);
+
+            spritePreviewOverlay.style.width = displayWidth + 'px';
+            spritePreviewOverlay.style.height = displayHeight + 'px';
+            spritePreviewOverlay.width = backingWidth;
+            spritePreviewOverlay.height = backingHeight;
+
             const ctx = spritePreviewOverlay.getContext('2d');
-            ctx.clearRect(0, 0, spritePreviewOverlay.width, spritePreviewOverlay.height);
-            
-            // Set line style
-            ctx.strokeStyle = 'red';
-            ctx.lineWidth = 3;
-            
-            // Draw outer border to show offset area
-            ctx.beginPath();
-            ctx.rect(
-                offsetLeft, 
-                offsetTop, 
-                effectiveWidth, 
-                effectiveHeight
-            );
-            ctx.stroke();
-            
-            // Draw vertical lines
+            ctx.clearRect(0, 0, backingWidth, backingHeight);
+            ctx.scale(backingWidth / spriteSheet.width, backingHeight / spriteSheet.height);
+
+            // From here on, all drawing happens in native sprite sheet coordinates -
+            // ctx.scale() above maps it onto the crisp backing store for us.
+            const width = spriteSheet.width;
+            const height = spriteSheet.height;
+
+            // Shade out everything that won't end up in any extracted frame: the
+            // cropped-away offset margins, plus any leftover sliver when rows/cols
+            // don't evenly divide the cropped area (see getSliceParams).
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.55)';
+            ctx.fillRect(0, 0, width, offsetTop);
+            ctx.fillRect(0, height - offsetBottom, width, offsetBottom);
+            ctx.fillRect(0, offsetTop, offsetLeft, effectiveHeight);
+            ctx.fillRect(width - offsetRight, offsetTop, offsetRight, effectiveHeight);
+
+            const remainderRight = effectiveWidth - usedWidth;
+            const remainderBottom = effectiveHeight - usedHeight;
+            if (remainderRight > 0) {
+                ctx.fillRect(offsetLeft + usedWidth, offsetTop, remainderRight, effectiveHeight);
+            }
+            if (remainderBottom > 0) {
+                ctx.fillRect(offsetLeft, offsetTop + usedHeight, effectiveWidth, remainderBottom);
+            }
+
+            // Line widths are specified in native sprite-sheet units, which the active
+            // ctx.scale() converts to a consistent on-screen thickness. At high slice
+            // counts the frames themselves can be only a few native pixels wide, so the
+            // line (and its contrast halo) are also capped to a fraction of the
+            // smallest frame dimension - otherwise neighbouring dividers overlap into
+            // one solid blob instead of staying distinguishable.
+            const pixelScale = spriteSheet.width / displayWidth;
+            const minFrameDim = Math.min(frameWidth, frameHeight);
+            const lineWidth = Math.min(Math.max(1, 1.5 * pixelScale), Math.max(1, minFrameDim / 4));
+            const haloWidth = Math.min(lineWidth * 2.5, minFrameDim * 0.6);
+
+            // Build the full grid as one path so it can be outlined twice (dark halo +
+            // bright core), keeping it visible against any sprite sheet colors.
+            const gridPath = new Path2D();
+            gridPath.rect(offsetLeft, offsetTop, usedWidth, usedHeight);
+
             for (let col = 1; col < cols; col++) {
                 const x = offsetLeft + (col * frameWidth);
-                ctx.beginPath();
-                ctx.moveTo(x, offsetTop);
-                ctx.lineTo(x, spritePreviewOverlay.height - offsetBottom);
-                ctx.stroke();
+                gridPath.moveTo(x, offsetTop);
+                gridPath.lineTo(x, offsetTop + usedHeight);
             }
-            
-            // Draw horizontal lines
+
             for (let row = 1; row < rows; row++) {
                 const y = offsetTop + (row * frameHeight);
-                ctx.beginPath();
-                ctx.moveTo(offsetLeft, y);
-                ctx.lineTo(spritePreviewOverlay.width - offsetRight, y);
-                ctx.stroke();
+                gridPath.moveTo(offsetLeft, y);
+                gridPath.lineTo(offsetLeft + usedWidth, y);
             }
+
+            ctx.lineWidth = haloWidth;
+            ctx.strokeStyle = 'rgba(0, 0, 0, 0.85)';
+            ctx.stroke(gridPath);
+
+            ctx.lineWidth = lineWidth;
+            ctx.strokeStyle = '#ffde59';
+            ctx.stroke(gridPath);
         }
-        
+
         // GIFs can't store the smooth alpha channel a PNG has - a pixel is either fully
         // opaque or fully transparent. So pixels below the alpha threshold get repainted
         // with one solid "key" color, and the GIF encoder is told to render that color
@@ -309,40 +515,32 @@
             if (!spriteSheet) return;
 
             // Get parameters
-            const rows = parseInt(rowsInput.value) || 4;
-            const cols = parseInt(colsInput.value) || 4;
+            const { offsetTop, offsetLeft, rows, cols, frameWidth, frameHeight } = getSliceParams();
             const frameDelay = parseInt(frameDelayInput.value) || 150;
-            const quality = 10;
-            const transparentColor = pickTransparentColor(spriteSheet);
-            
-            // Get offset values
-            const offsetTop = parseInt(offsetTopInput.value) || 0;
-            const offsetBottom = parseInt(offsetBottomInput.value) || 0;
-            const offsetLeft = parseInt(offsetLeftInput.value) || 0;
-            const offsetRight = parseInt(offsetRightInput.value) || 0;
-            
-            // Calculate effective dimensions after offsets
-            const effectiveWidth = spriteSheet.width - offsetLeft - offsetRight;
-            const effectiveHeight = spriteSheet.height - offsetTop - offsetBottom;
-            
-            // Calculate frame dimensions
-            const frameWidth = Math.floor(effectiveWidth / cols);
-            const frameHeight = Math.floor(effectiveHeight / rows);
-            
+            const quality = parseInt(qualityInput.value) || 10;
+            const loopRepeat = parseInt(loopModeInput.value) || 0;
+            const transparentColor = transparencyToggle.checked ? pickTransparentColor(spriteSheet) : null;
+            // With transparency off, the frame canvas needs an opaque background fill
+            // before drawing - otherwise transparent source pixels stay alpha=0 and get
+            // encoded against whatever the GIF encoder defaults to (black).
+            const fillBackground = !transparencyToggle.checked;
+            const backgroundColor = backgroundColorInput.value;
+
             // Set up canvas
             tempCanvas.width = frameWidth;
             tempCanvas.height = frameHeight;
             const ctx = tempCanvas.getContext('2d');
-            
+
             // Show status and progress
+            clearTimeout(statusHideTimeout);
             statusText.textContent = 'EXTRACTING FRAMES...';
             statusText.classList.remove('hidden');
             progressBar.classList.remove('hidden');
             progressBar.value = 0;
             generateBtn.disabled = true;
-            framePreview.innerHTML = '<div class="section-header"><h2>EXTRACTED FRAMES</h2></div>';
+            frameGrid.innerHTML = '';
             framePreview.classList.remove('hidden');
-            
+
             // Create GIF
             const gif = new GIF({
                 workers: 2,
@@ -350,23 +548,30 @@
                 width: frameWidth,
                 height: frameHeight,
                 transparent: transparentColor,
+                repeat: loopRepeat,
                 workerScript: 'gif.worker.js'  // Use local worker script
             });
-            
+
             // Total number of frames
             const totalFrames = rows * cols;
             let framesDone = 0;
-            
+
             // Process frames row by row, left to right
             for (let row = 0; row < rows; row++) {
                 for (let col = 0; col < cols; col++) {
-                    // Clear canvas
+                    // Clear canvas, then fill with the chosen background color when
+                    // transparency is off so source-transparent pixels don't fall back
+                    // to a black default once the alpha channel is dropped at encode time.
                     ctx.clearRect(0, 0, frameWidth, frameHeight);
-                    
+                    if (fillBackground) {
+                        ctx.fillStyle = backgroundColor;
+                        ctx.fillRect(0, 0, frameWidth, frameHeight);
+                    }
+
                     // Calculate source coordinates with offsets
                     const sourceX = offsetLeft + (col * frameWidth);
                     const sourceY = offsetTop + (row * frameHeight);
-                    
+
                     // Draw current frame on canvas with offsets applied
                     ctx.drawImage(
                         spriteSheet,
@@ -379,11 +584,11 @@
                         frameWidth,
                         frameHeight
                     );
-                    
+
                     // Add frame to preview (still has real alpha transparency at this point)
                     const frameImg = document.createElement('img');
                     frameImg.src = tempCanvas.toDataURL('image/png');
-                    framePreview.appendChild(frameImg);
+                    frameGrid.appendChild(frameImg);
 
                     // Repaint transparent pixels with the chroma-key color before encoding
                     if (transparentColor !== null) {
@@ -410,66 +615,44 @@
                         copy: true,
                         delay: frameDelay
                     });
-                    
+
                     // Update progress
                     framesDone++;
                     progressBar.value = (framesDone / totalFrames) * 50; // Save 50% for rendering
                 }
             }
-            
+
             // GIF events
             gif.on('progress', function(p) {
                 progressBar.value = 50 + (p * 50); // Last 50% for rendering
                 statusText.textContent = `RENDERING GIF: ${Math.round(p * 100)}%`;
             });
-            
+
             gif.on('finished', function(blob) {
                 // Display the GIF
                 const url = URL.createObjectURL(blob);
                 gifOutput.src = url;
                 downloadLink.href = url;
                 downloadLink.download = 'sprite-animation.gif';
-                
+
                 // Show results
                 resultContainer.classList.remove('hidden');
                 downloadLink.classList.remove('hidden');
                 progressBar.classList.add('hidden');
                 statusText.textContent = 'GIF CREATED SUCCESSFULLY!';
+                statusHideTimeout = setTimeout(() => statusText.classList.add('hidden'), 3000);
                 generateBtn.disabled = false;
+
+                // Further clicks on the same image are a "regenerate", not a first generate
+                hasGenerated = true;
+                generateBtn.textContent = 'REGENERATE GIF';
             });
-            
+
             // Start rendering
             statusText.textContent = 'RENDERING GIF...';
             gif.render();
         }
-        
-        function loadExampleSpritesheet() {
-            // Create an Image object
-            const img = new Image();
-            
-            // Set up onload handler
-            img.onload = function() {
-                spriteSheet = img;
-                spritePreview.src = img.src;
-                previewContainer.classList.remove('hidden');
-                generateBtn.disabled = false;
-                
-                // Set up the overlay canvas to match the sprite sheet size
-                spritePreviewOverlay.width = img.width;
-                spritePreviewOverlay.height = img.height;
-                
-                // Draw the grid lines after image is loaded
-                updateGridLines();
-                
-                // Clear previous results
-                resultContainer.classList.add('hidden');
-                framePreview.innerHTML = '<div class="section-header"><h2>EXTRACTED FRAMES</h2></div>';
-                framePreview.classList.add('hidden');
-            };
-            
-            // Set source to example spritesheet
-            img.src = exampleSpritesheetPath;
-        }
+
     </script>
 </body>
 </html>
