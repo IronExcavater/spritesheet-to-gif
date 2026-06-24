@@ -1,0 +1,10 @@
+gif.js
+gif.worker.js
+assets/
+node_modules/
+.remember/
+.claude/
+package-lock.json
+
+# not yet reformatted to Prettier style - large structural diff, reformat separately
+index.html

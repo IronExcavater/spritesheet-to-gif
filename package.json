@@ -1,0 +1,21 @@
+{
+  "name": "spritesheet-to-gif",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Free web tool that converts sprite sheets into animated GIFs, entirely in the browser",
+  "homepage": "https://ironexcavater.github.io/spritesheet-to-gif/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/IronExcavater/spritesheet-to-gif.git"
+  },
+  "license": "MIT",
+  "scripts": {
+    "dev": "serve -l 3000 .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "devDependencies": {
+    "prettier": "^3.3.3",
+    "serve": "^14.2.4"
+  }
+}

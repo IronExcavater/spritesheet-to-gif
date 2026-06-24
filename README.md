@@ -25,9 +25,21 @@ A free web tool that converts sprite sheets into animated GIFs. Useful for game 
 ```bash
 git clone https://github.com/IronExcavater/spritesheet-to-gif.git
 cd spritesheet-to-gif
+npm install
+npm run dev
 ```
 
-Then open `index.html` directly in a browser, or serve the folder with any static file server.
+This serves the folder at `http://localhost:3000`. You can also skip npm entirely and just open `index.html` directly in a browser, or serve the folder with any static file server.
+
+## Scripts
+
+- `npm run dev` — serve the site locally at `http://localhost:3000`
+- `npm run format` — format HTML/CSS/JS with Prettier
+- `npm run format:check` — check formatting without writing (used in CI)
+
+## Deployment
+
+Pushes to `main` are automatically deployed to GitHub Pages via [.github/workflows/deploy.yml](.github/workflows/deploy.yml). Pull requests and pushes also run a formatting check via [.github/workflows/ci.yml](.github/workflows/ci.yml).
 
 ## License
 
