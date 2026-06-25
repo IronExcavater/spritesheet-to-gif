@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sprite Sheet to GIF Converter</title>
+    <link rel="icon" href="data:,">
 
     <!-- Primary Meta Tags -->
     <meta name="title" content="Sprite Sheet to GIF Converter">
@@ -63,8 +64,29 @@
                         <span class="switch-track"><span class="switch-thumb"></span></span>
                     </label>
 
-                    <label for="backgroundColor">BACKGROUND</label>
-                    <input type="color" id="backgroundColor" value="#ffffff" disabled>
+                    <label for="backgroundColorTrigger">BACKGROUND</label>
+                    <div id="backgroundColorPicker" class="color-picker is-disabled">
+                        <input type="hidden" id="backgroundColor" value="#ffffff">
+                        <button id="backgroundColorTrigger" class="color-trigger" type="button" disabled aria-haspopup="dialog" aria-expanded="false">
+                            <span id="backgroundColorSwatch" class="color-trigger-swatch" style="background-color: #ffffff"></span>
+                            <span id="backgroundColorValue">#FFFFFF</span>
+                        </button>
+                        <div id="colorPickerPanel" class="color-picker-panel hidden" role="dialog" aria-label="Background color picker">
+                            <div class="color-presets" aria-label="Color presets">
+                                <button type="button" data-color="#FFFFFF" style="--swatch: #ffffff" aria-label="White"></button>
+                                <button type="button" data-color="#000000" style="--swatch: #000000" aria-label="Black"></button>
+                                <button type="button" data-color="#FF6BB0" style="--swatch: #ff6bb0" aria-label="Pink"></button>
+                                <button type="button" data-color="#00C2FF" style="--swatch: #00c2ff" aria-label="Blue"></button>
+                                <button type="button" data-color="#FFDE59" style="--swatch: #ffde59" aria-label="Yellow"></button>
+                                <button type="button" data-color="#D1D1D1" style="--swatch: #d1d1d1" aria-label="Gray"></button>
+                            </div>
+                            <label for="backgroundHex">HEX COLOR</label>
+                            <div class="color-hex-row">
+                                <input id="backgroundHex" type="text" value="#FFFFFF" maxlength="7" spellcheck="false">
+                                <button id="applyBackgroundColor" type="button">APPLY</button>
+                            </div>
+                        </div>
+                    </div>
 
                     <div class="offset-grid">
                         <div class="offset-field">
@@ -94,10 +116,30 @@
             <div class="preview-column">
                 <div id="previewBox">
                     <input type="file" id="spriteUpload" accept="image/*" class="visually-hidden">
-                    <label for="spriteUpload" id="spriteUploadLabel">UPLOAD SPRITE SHEET</label>
-                    <div id="previewWrapper" class="preview-wrapper hidden">
-                        <img id="spritePreview" class="preview" alt="Sprite sheet preview">
-                        <canvas id="spritePreviewOverlay" class="preview"></canvas>
+                    <label for="spriteUpload" id="spriteUploadLabel">
+                        <span class="upload-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M12 16V4m0 0L7 9m5-5 5 5M5 14v5h14v-5"></path>
+                            </svg>
+                        </span>
+                        <span class="upload-title">DROP A SPRITE SHEET HERE</span>
+                        <span class="upload-copy">PNG, JPG, WEBP, or GIF</span>
+                        <span class="upload-action">CHOOSE IMAGE</span>
+                    </label>
+                    <div id="editorToolbar" class="editor-toolbar hidden">
+                        <label for="spriteUpload" class="toolbar-file-btn">REPLACE IMAGE</label>
+                        <div class="zoom-stepper" aria-label="Canvas zoom">
+                            <button id="zoomOutBtn" type="button" aria-label="Zoom out">−</button>
+                            <span id="zoomLevel" class="zoom-level" aria-live="polite">100%</span>
+                            <button id="zoomInBtn" type="button" aria-label="Zoom in">+</button>
+                        </div>
+                        <button id="fitViewBtn" class="toolbar-btn text-btn" type="button">FIT</button>
+                        <button id="centerViewBtn" class="toolbar-btn text-btn" type="button">CENTER</button>
+                        <button id="guidesBtn" class="toolbar-btn text-btn is-active" type="button" aria-pressed="true">GUIDES</button>
+                        <span id="sourceInfo" class="source-info"></span>
+                    </div>
+                    <div id="canvasViewport" class="canvas-viewport hidden">
+                        <canvas id="spriteCanvas" aria-label="Zoomable sprite sheet editor"></canvas>
                     </div>
                 </div>
             </div>
@@ -119,21 +161,94 @@
 
     <canvas id="tempCanvas" class="hidden"></canvas>
 
-    <div id="notesDiv">
-        <p>Converts a sprite sheet image into an animated GIF. Upload an image, set the row/column count, frame delay, and crop offsets, then generate and download the result.</p>
-        <p>Transparent areas in the source PNG are preserved as a transparent background in the generated GIF, unless turned off with the transparency toggle.</p>
-        <p>Open source under the MIT license.</p>
-    </div>
+    <section id="notesDiv" class="about-section">
+        <div class="about-copy">
+            <h2>ABOUT THIS TOOL</h2>
+            <p class="about-intro">Turn sprite sheets into animated GIFs without uploading your artwork. Configure the slice, preview every frame, and export directly in the browser.</p>
+            <ul class="about-features">
+                <li>Grid and crop controls</li>
+                <li>Transparent GIF support</li>
+                <li>Zoomable source editor</li>
+                <li>Local browser processing</li>
+            </ul>
+            <p class="about-credit">Built with JavaScript and <a href="https://github.com/jnordberg/gif.js" target="_blank" rel="noopener noreferrer">gif.js</a>. Based on the original <a href="https://github.com/collidingScopes/spritesheet-to-gif" target="_blank" rel="noopener noreferrer">collidingScopes project</a> and maintained on <a href="https://github.com/IronExcavater/spritesheet-to-gif" target="_blank" rel="noopener noreferrer">GitHub</a>.</p>
+            <div class="about-actions">
+                <button id="licenseBtn" type="button">VIEW MIT LICENSE</button>
+                <a href="https://github.com/IronExcavater/spritesheet-to-gif" target="_blank" rel="noopener noreferrer">SOURCE CODE</a>
+            </div>
+        </div>
+        <div class="about-profile">
+            <h2>MADE BY NICLAS</h2>
+            <p>Niclas Rogulski is a game developer and software engineer studying Games Development at UTS. Find more games and projects below.</p>
+            <div class="social-links" aria-label="Niclas Rogulski social links">
+                <a href="https://www.linkedin.com/in/niclas-rogulski-459845302" target="_blank" rel="noopener noreferrer">
+                    <img src="https://raw.githubusercontent.com/rahuldkjain/github-profile-readme-generator/master/src/images/icons/Social/linked-in-alt.svg" alt="">
+                    <span>LINKEDIN</span>
+                </a>
+                <a href="https://github.com/IronExcavater/IronExcavater" target="_blank" rel="noopener noreferrer">
+                    <img src="https://raw.githubusercontent.com/rahuldkjain/github-profile-readme-generator/master/src/images/icons/Social/github.svg" alt="">
+                    <span>GITHUB</span>
+                </a>
+                <a href="https://niclas-rogulski.itch.io" target="_blank" rel="noopener noreferrer">
+                    <img src="https://raw.githubusercontent.com/IronExcavater/IronExcavater/master/icons/itchio-textless-red.svg" alt="">
+                    <span>ITCH.IO</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <dialog id="licenseDialog" class="license-dialog" aria-labelledby="licenseTitle">
+        <div class="license-header">
+            <div>
+                <h2 id="licenseTitle">MIT LICENSE</h2>
+                <p>Sprite Sheet to GIF</p>
+            </div>
+            <button id="closeLicenseBtn" class="license-close" type="button" aria-label="Close license">×</button>
+        </div>
+        <pre>MIT License
+
+Copyright (c) 2025 collidingScopes
+Copyright (c) 2026 IronExcavater
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.</pre>
+        <div class="license-actions">
+            <button id="dismissLicenseBtn" type="button">CLOSE</button>
+            <a href="https://github.com/IronExcavater/spritesheet-to-gif/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">VIEW ON GITHUB</a>
+        </div>
+    </dialog>
 
     <script>
         // DOM Elements
         const spriteUpload = document.getElementById('spriteUpload');
         const spriteUploadLabel = document.getElementById('spriteUploadLabel');
         const generateBtn = document.getElementById('generateBtn');
-        const spritePreview = document.getElementById('spritePreview');
-        const spritePreviewOverlay = document.getElementById('spritePreviewOverlay');
+        const spriteCanvas = document.getElementById('spriteCanvas');
         const previewBox = document.getElementById('previewBox');
-        const previewWrapper = document.getElementById('previewWrapper');
+        const canvasViewport = document.getElementById('canvasViewport');
+        const editorToolbar = document.getElementById('editorToolbar');
+        const zoomOutBtn = document.getElementById('zoomOutBtn');
+        const zoomInBtn = document.getElementById('zoomInBtn');
+        const fitViewBtn = document.getElementById('fitViewBtn');
+        const centerViewBtn = document.getElementById('centerViewBtn');
+        const guidesBtn = document.getElementById('guidesBtn');
+        const zoomLevel = document.getElementById('zoomLevel');
+        const sourceInfo = document.getElementById('sourceInfo');
         const resultContainer = document.getElementById('resultContainer');
         const gifOutput = document.getElementById('gifOutput');
         const downloadLink = document.getElementById('downloadLink');
@@ -142,6 +257,10 @@
         const statusText = document.getElementById('statusText');
         const framePreview = document.getElementById('framePreview');
         const frameGrid = document.getElementById('frameGrid');
+        const licenseBtn = document.getElementById('licenseBtn');
+        const licenseDialog = document.getElementById('licenseDialog');
+        const closeLicenseBtn = document.getElementById('closeLicenseBtn');
+        const dismissLicenseBtn = document.getElementById('dismissLicenseBtn');
 
         // Form inputs
         const rowsInput = document.getElementById('rows');
@@ -151,6 +270,13 @@
         const loopModeInput = document.getElementById('loopMode');
         const transparencyToggle = document.getElementById('transparencyToggle');
         const backgroundColorInput = document.getElementById('backgroundColor');
+        const backgroundColorPicker = document.getElementById('backgroundColorPicker');
+        const backgroundColorTrigger = document.getElementById('backgroundColorTrigger');
+        const backgroundColorSwatch = document.getElementById('backgroundColorSwatch');
+        const backgroundColorValue = document.getElementById('backgroundColorValue');
+        const colorPickerPanel = document.getElementById('colorPickerPanel');
+        const backgroundHex = document.getElementById('backgroundHex');
+        const applyBackgroundColor = document.getElementById('applyBackgroundColor');
 
         // Offset inputs
         const offsetTopInput = document.getElementById('offsetTop');
@@ -162,16 +288,58 @@
         let spriteSheet = null;
         let hasGenerated = false;
         let statusHideTimeout = null;
+        let generatedGifUrl = null;
+        let sourceView = { zoom: 1, panX: 0, panY: 0 };
+        let fitZoom = 1;
+        let pointerDrag = null;
+        let guidesVisible = true;
+        let lastViewportSize = { width: 0, height: 0 };
 
         // Event listeners
         spriteUpload.addEventListener('change', handleSpriteUpload);
         generateBtn.addEventListener('click', generateGif);
+        licenseBtn.addEventListener('click', () => licenseDialog.showModal());
+        closeLicenseBtn.addEventListener('click', () => licenseDialog.close());
+        dismissLicenseBtn.addEventListener('click', () => licenseDialog.close());
+        licenseDialog.addEventListener('click', event => {
+            if (event.target === licenseDialog) licenseDialog.close();
+        });
 
         // The background-fill color only matters when transparency is off (it's what
         // shows through where the source had transparent pixels), so keep it disabled
         // otherwise rather than letting users set a value that has no effect.
         transparencyToggle.addEventListener('change', () => {
-            backgroundColorInput.disabled = transparencyToggle.checked;
+            const disabled = transparencyToggle.checked;
+            backgroundColorTrigger.disabled = disabled;
+            backgroundColorPicker.classList.toggle('is-disabled', disabled);
+            if (disabled) closeColorPicker();
+        });
+
+        backgroundColorTrigger.addEventListener('click', () => {
+            const opening = colorPickerPanel.classList.contains('hidden');
+            colorPickerPanel.classList.toggle('hidden', !opening);
+            backgroundColorTrigger.setAttribute('aria-expanded', String(opening));
+            if (opening) {
+                backgroundHex.value = backgroundColorInput.value.toUpperCase();
+                backgroundHex.focus();
+                backgroundHex.select();
+            }
+        });
+
+        colorPickerPanel.querySelectorAll('[data-color]').forEach(button => {
+            button.addEventListener('click', () => {
+                setBackgroundColor(button.dataset.color);
+                closeColorPicker();
+            });
+        });
+
+        applyBackgroundColor.addEventListener('click', applyHexColor);
+        backgroundHex.addEventListener('keydown', event => {
+            if (event.key === 'Enter') applyHexColor();
+        });
+
+        document.addEventListener('click', event => {
+            if (!event.target.closest('.color-picker')) closeColorPicker();
         });
 
         // Dropping an image anywhere on the preview box uploads it, same as picking one
@@ -194,7 +362,20 @@
         offsetBottomInput.addEventListener('input', updateGridLines);
         offsetLeftInput.addEventListener('input', updateGridLines);
         offsetRightInput.addEventListener('input', updateGridLines);
-        window.addEventListener('resize', updateGridLines);
+        window.addEventListener('resize', handleViewportResize);
+
+        zoomOutBtn.addEventListener('click', () => zoomSource(0.8));
+        zoomInBtn.addEventListener('click', () => zoomSource(1.25));
+        fitViewBtn.addEventListener('click', fitSourceToViewport);
+        centerViewBtn.addEventListener('click', centerSource);
+        guidesBtn.addEventListener('click', toggleGuides);
+        canvasViewport.addEventListener('wheel', handleCanvasWheel, { passive: false });
+        canvasViewport.addEventListener('pointerdown', startCanvasPan);
+        canvasViewport.addEventListener('pointermove', moveCanvasPan);
+        canvasViewport.addEventListener('pointerup', endCanvasPan);
+        canvasViewport.addEventListener('pointercancel', endCanvasPan);
+        canvasViewport.addEventListener('dblclick', fitSourceToViewport);
+        window.addEventListener('keydown', handleEditorShortcut);
 
         // Snap each field back to a valid value once the user is done editing it
         // (rather than fighting them mid-keystroke), and refresh the other fields'
@@ -207,6 +388,40 @@
 
         function handleSpriteUpload(event) {
             loadImageFile(event.target.files[0]);
+        }
+
+        function normalizeHexColor(value) {
+            const cleaned = value.trim().replace(/^#/, '');
+            if (/^[0-9a-fA-F]{3}$/.test(cleaned)) {
+                return `#${cleaned.split('').map(char => char + char).join('').toUpperCase()}`;
+            }
+            if (/^[0-9a-fA-F]{6}$/.test(cleaned)) return `#${cleaned.toUpperCase()}`;
+            return null;
+        }
+
+        function setBackgroundColor(value) {
+            const color = normalizeHexColor(value);
+            if (!color) return false;
+            backgroundColorInput.value = color;
+            backgroundColorSwatch.style.backgroundColor = color;
+            backgroundColorValue.textContent = color;
+            backgroundHex.value = color;
+            backgroundHex.classList.remove('is-invalid');
+            return true;
+        }
+
+        function applyHexColor() {
+            if (setBackgroundColor(backgroundHex.value)) {
+                closeColorPicker();
+            } else {
+                backgroundHex.classList.add('is-invalid');
+                backgroundHex.focus();
+            }
+        }
+
+        function closeColorPicker() {
+            colorPickerPanel.classList.add('hidden');
+            backgroundColorTrigger.setAttribute('aria-expanded', 'false');
         }
 
         function loadImageFile(file) {
@@ -282,17 +497,107 @@
         attachStepper(offsetLeftInput, { compact: true });
         attachStepper(offsetRightInput, { compact: true });
 
+        function enhanceSelect(select) {
+            const label = document.querySelector(`label[for="${select.id}"]`);
+            const shell = document.createElement('div');
+            shell.className = 'custom-select';
+            select.parentNode.insertBefore(shell, select);
+            shell.appendChild(select);
+            select.classList.add('native-select');
+            select.tabIndex = -1;
+            select.setAttribute('aria-hidden', 'true');
+
+            const trigger = document.createElement('button');
+            trigger.type = 'button';
+            trigger.className = 'select-trigger';
+            trigger.id = `${select.id}Trigger`;
+            trigger.setAttribute('aria-haspopup', 'listbox');
+            trigger.setAttribute('aria-expanded', 'false');
+            if (label) label.htmlFor = trigger.id;
+            trigger.setAttribute(
+                'aria-label',
+                `${label?.textContent || select.id}: ${select.options[select.selectedIndex].text}`
+            );
+            trigger.innerHTML = `<span>${select.options[select.selectedIndex].text}</span><span class="select-caret" aria-hidden="true"></span>`;
+
+            const menu = document.createElement('div');
+            menu.className = 'select-menu hidden';
+            menu.setAttribute('role', 'listbox');
+            menu.setAttribute('aria-label', select.previousElementSibling?.textContent || select.id);
+
+            Array.from(select.options).forEach((option, index) => {
+                const item = document.createElement('button');
+                item.type = 'button';
+                item.className = 'select-option';
+                item.setAttribute('role', 'option');
+                item.setAttribute('aria-selected', String(option.selected));
+                item.textContent = option.text;
+                item.addEventListener('click', () => {
+                    select.selectedIndex = index;
+                    select.dispatchEvent(new Event('change', { bubbles: true }));
+                    trigger.querySelector('span').textContent = option.text;
+                    trigger.setAttribute('aria-label', `${label?.textContent || select.id}: ${option.text}`);
+                    menu.querySelectorAll('.select-option').forEach((button, buttonIndex) => {
+                        button.setAttribute('aria-selected', String(buttonIndex === index));
+                    });
+                    closeMenu();
+                    trigger.focus();
+                });
+                menu.appendChild(item);
+            });
+
+            function closeMenu() {
+                menu.classList.add('hidden');
+                trigger.setAttribute('aria-expanded', 'false');
+                shell.classList.remove('is-open');
+            }
+
+            trigger.addEventListener('click', () => {
+                const opening = menu.classList.contains('hidden');
+                document.querySelectorAll('.custom-select.is-open .select-trigger').forEach(button => {
+                    if (button !== trigger) button.click();
+                });
+                menu.classList.toggle('hidden', !opening);
+                trigger.setAttribute('aria-expanded', String(opening));
+                shell.classList.toggle('is-open', opening);
+            });
+
+            trigger.addEventListener('keydown', event => {
+                if (!['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(event.key)) return;
+                event.preventDefault();
+                if (menu.classList.contains('hidden')) trigger.click();
+                const options = Array.from(menu.querySelectorAll('.select-option'));
+                const current = options.findIndex(option => option.getAttribute('aria-selected') === 'true');
+                const next = event.key === 'Home'
+                    ? 0
+                    : event.key === 'End'
+                        ? options.length - 1
+                        : event.key === 'ArrowDown'
+                            ? Math.min(options.length - 1, current + 1)
+                            : Math.max(0, current - 1);
+                options[next].focus();
+            });
+
+            shell.appendChild(trigger);
+            shell.appendChild(menu);
+        }
+
+        enhanceSelect(qualityInput);
+        enhanceSelect(loopModeInput);
+        document.addEventListener('click', event => {
+            if (event.target.closest('.custom-select')) return;
+            document.querySelectorAll('.custom-select.is-open .select-trigger').forEach(button => button.click());
+        });
+
         function displaySpriteSheet(img) {
             spriteSheet = img;
-            spritePreview.src = img.src;
-            previewWrapper.classList.remove('hidden');
+            canvasViewport.classList.remove('hidden');
+            editorToolbar.classList.remove('hidden');
             previewBox.classList.add('has-image');
-            spriteUploadLabel.textContent = 'REPLACE IMAGE';
             generateBtn.disabled = false;
 
-            // Draw the grid lines after image is loaded
             updateInputConstraints();
-            updateGridLines();
+            requestAnimationFrame(fitSourceToViewport);
 
             // A newly loaded image hasn't been generated yet, so the button should
             // read "generate" again rather than "regenerate" from the previous image.
@@ -303,6 +608,130 @@
             resultContainer.classList.add('hidden');
             frameGrid.innerHTML = '';
             framePreview.classList.add('hidden');
+        }
+
+        function fitSourceToViewport() {
+            if (!spriteSheet) return;
+            const width = canvasViewport.clientWidth;
+            const height = canvasViewport.clientHeight;
+            if (!width || !height) return;
+
+            fitZoom = calculateFitZoom(width, height);
+            sourceView.zoom = fitZoom;
+            sourceView.panX = (width - spriteSheet.width * sourceView.zoom) / 2;
+            sourceView.panY = (height - spriteSheet.height * sourceView.zoom) / 2;
+            lastViewportSize = { width, height };
+            updateGridLines();
+        }
+
+        function calculateFitZoom(width = canvasViewport.clientWidth, height = canvasViewport.clientHeight) {
+            const padding = 32;
+            return Math.max(
+                0.01,
+                Math.min((width - padding) / spriteSheet.width, (height - padding) / spriteSheet.height)
+            );
+        }
+
+        function centerSource() {
+            if (!spriteSheet) return;
+            sourceView.panX = (canvasViewport.clientWidth - spriteSheet.width * sourceView.zoom) / 2;
+            sourceView.panY = (canvasViewport.clientHeight - spriteSheet.height * sourceView.zoom) / 2;
+            updateGridLines();
+        }
+
+        function setSourceZoom(nextZoom, focusX = canvasViewport.clientWidth / 2, focusY = canvasViewport.clientHeight / 2) {
+            if (!spriteSheet) return;
+            const previousZoom = sourceView.zoom;
+            nextZoom = Math.max(fitZoom * 0.25, Math.min(fitZoom * 8, nextZoom));
+            const imageX = (focusX - sourceView.panX) / previousZoom;
+            const imageY = (focusY - sourceView.panY) / previousZoom;
+
+            sourceView.zoom = nextZoom;
+            sourceView.panX = focusX - imageX * nextZoom;
+            sourceView.panY = focusY - imageY * nextZoom;
+            updateGridLines();
+        }
+
+        function zoomSource(factor, focusX = canvasViewport.clientWidth / 2, focusY = canvasViewport.clientHeight / 2) {
+            setSourceZoom(sourceView.zoom * factor, focusX, focusY);
+        }
+
+        function handleCanvasWheel(event) {
+            if (!spriteSheet) return;
+            event.preventDefault();
+            const bounds = canvasViewport.getBoundingClientRect();
+            zoomSource(event.deltaY < 0 ? 1.1 : 1 / 1.1, event.clientX - bounds.left, event.clientY - bounds.top);
+        }
+
+        function handleViewportResize() {
+            if (!spriteSheet) return;
+            const width = canvasViewport.clientWidth;
+            const height = canvasViewport.clientHeight;
+            if (!lastViewportSize.width || !lastViewportSize.height) {
+                fitSourceToViewport();
+                return;
+            }
+            const relativeZoom = sourceView.zoom / fitZoom;
+            const oldCenterX = lastViewportSize.width / 2;
+            const oldCenterY = lastViewportSize.height / 2;
+            const imageCenterX = (oldCenterX - sourceView.panX) / sourceView.zoom;
+            const imageCenterY = (oldCenterY - sourceView.panY) / sourceView.zoom;
+            fitZoom = calculateFitZoom(width, height);
+            sourceView.zoom = fitZoom * relativeZoom;
+            sourceView.panX = width / 2 - imageCenterX * sourceView.zoom;
+            sourceView.panY = height / 2 - imageCenterY * sourceView.zoom;
+            lastViewportSize = { width, height };
+            updateGridLines();
+        }
+
+        function toggleGuides() {
+            guidesVisible = !guidesVisible;
+            guidesBtn.classList.toggle('is-active', guidesVisible);
+            guidesBtn.setAttribute('aria-pressed', String(guidesVisible));
+            updateGridLines();
+        }
+
+        function startCanvasPan(event) {
+            if (!spriteSheet || event.button !== 0) return;
+            canvasViewport.setPointerCapture(event.pointerId);
+            pointerDrag = {
+                id: event.pointerId,
+                startX: event.clientX,
+                startY: event.clientY,
+                panX: sourceView.panX,
+                panY: sourceView.panY
+            };
+            canvasViewport.classList.add('is-panning');
+        }
+
+        function moveCanvasPan(event) {
+            if (!pointerDrag || pointerDrag.id !== event.pointerId) return;
+            sourceView.panX = pointerDrag.panX + event.clientX - pointerDrag.startX;
+            sourceView.panY = pointerDrag.panY + event.clientY - pointerDrag.startY;
+            updateGridLines();
+        }
+
+        function endCanvasPan(event) {
+            if (!pointerDrag || pointerDrag.id !== event.pointerId) return;
+            pointerDrag = null;
+            canvasViewport.classList.remove('is-panning');
+        }
+
+        function handleEditorShortcut(event) {
+            if (!spriteSheet || ['INPUT', 'SELECT'].includes(document.activeElement.tagName)) return;
+            if (event.key === '+' || event.key === '=') {
+                event.preventDefault();
+                zoomSource(1.25);
+            } else if (event.key === '-') {
+                event.preventDefault();
+                zoomSource(0.8);
+            } else if (event.key === '0') {
+                event.preventDefault();
+                fitSourceToViewport();
+            } else if (event.key.toLowerCase() === 'g') {
+                event.preventDefault();
+                toggleGuides();
+            }
         }
 
         // Below this many native pixels, a frame is too small to ever render as a
@@ -374,13 +803,6 @@
             };
         }
 
-        // Previously this canvas's backing store was set to the sprite sheet's native
-        // resolution and left for the browser to shrink via CSS down to the displayed
-        // size. That downscale is done with bilinear filtering, which blurs/shifts thin
-        // 1px grid lines unpredictably - the real cause of lines looking "misaligned" at
-        // high slice counts. Fixing it properly: size the backing store to match the
-        // *displayed* resolution (times devicePixelRatio for sharpness) and scale our own
-        // drawing math into that space, so the browser never has to resample the canvas.
         function updateGridLines() {
             if (!spriteSheet) return;
 
@@ -391,27 +813,40 @@
                 usedWidth, usedHeight
             } = getSliceParams();
 
-            const displayWidth = spritePreview.clientWidth;
-            const displayHeight = spritePreview.clientHeight;
+            const displayWidth = canvasViewport.clientWidth;
+            const displayHeight = canvasViewport.clientHeight;
             if (!displayWidth || !displayHeight) return;
 
             const dpr = window.devicePixelRatio || 1;
             const backingWidth = Math.round(displayWidth * dpr);
             const backingHeight = Math.round(displayHeight * dpr);
 
-            spritePreviewOverlay.style.width = displayWidth + 'px';
-            spritePreviewOverlay.style.height = displayHeight + 'px';
-            spritePreviewOverlay.width = backingWidth;
-            spritePreviewOverlay.height = backingHeight;
+            spriteCanvas.style.width = displayWidth + 'px';
+            spriteCanvas.style.height = displayHeight + 'px';
+            spriteCanvas.width = backingWidth;
+            spriteCanvas.height = backingHeight;
 
-            const ctx = spritePreviewOverlay.getContext('2d');
+            const ctx = spriteCanvas.getContext('2d');
             ctx.clearRect(0, 0, backingWidth, backingHeight);
-            ctx.scale(backingWidth / spriteSheet.width, backingHeight / spriteSheet.height);
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            ctx.imageSmoothingEnabled = false;
+            ctx.drawImage(
+                spriteSheet,
+                sourceView.panX,
+                sourceView.panY,
+                spriteSheet.width * sourceView.zoom,
+                spriteSheet.height * sourceView.zoom
+            );
 
-            // From here on, all drawing happens in native sprite sheet coordinates -
-            // ctx.scale() above maps it onto the crisp backing store for us.
+            ctx.translate(sourceView.panX, sourceView.panY);
+            ctx.scale(sourceView.zoom, sourceView.zoom);
             const width = spriteSheet.width;
             const height = spriteSheet.height;
+
+            if (!guidesVisible) {
+                updateEditorReadout(frameWidth, frameHeight);
+                return;
+            }
 
             // Shade out everything that won't end up in any extracted frame: the
             // cropped-away offset margins, plus any leftover sliver when rows/cols
@@ -431,15 +866,8 @@
                 ctx.fillRect(offsetLeft, offsetTop + usedHeight, effectiveWidth, remainderBottom);
             }
 
-            // Line widths are specified in native sprite-sheet units, which the active
-            // ctx.scale() converts to a consistent on-screen thickness. At high slice
-            // counts the frames themselves can be only a few native pixels wide, so the
-            // line (and its contrast halo) are also capped to a fraction of the
-            // smallest frame dimension - otherwise neighbouring dividers overlap into
-            // one solid blob instead of staying distinguishable.
-            const pixelScale = spriteSheet.width / displayWidth;
             const minFrameDim = Math.min(frameWidth, frameHeight);
-            const lineWidth = Math.min(Math.max(1, 1.5 * pixelScale), Math.max(1, minFrameDim / 4));
+            const lineWidth = Math.min(2 / sourceView.zoom, Math.max(1 / sourceView.zoom, minFrameDim / 4));
             const haloWidth = Math.min(lineWidth * 2.5, minFrameDim * 0.6);
 
             // Build the full grid as one path so it can be outlined twice (dark halo +
@@ -466,6 +894,14 @@
             ctx.lineWidth = lineWidth;
             ctx.strokeStyle = '#ffde59';
             ctx.stroke(gridPath);
+
+            updateEditorReadout(frameWidth, frameHeight);
+        }
+
+        function updateEditorReadout(frameWidth, frameHeight) {
+            const zoomPercent = Math.round((sourceView.zoom / fitZoom) * 100);
+            zoomLevel.textContent = `${zoomPercent}%`;
+            sourceInfo.textContent = `SHEET ${spriteSheet.width}×${spriteSheet.height} PX · FRAME ${frameWidth}×${frameHeight} PX`;
         }
 
         // GIFs can't store the smooth alpha channel a PNG has - a pixel is either fully
@@ -477,7 +913,7 @@
             const canvas = document.createElement('canvas');
             canvas.width = img.width;
             canvas.height = img.height;
-            const ctx = canvas.getContext('2d');
+            const ctx = canvas.getContext('2d', { willReadFrequently: true });
             ctx.drawImage(img, 0, 0);
             const { data } = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
@@ -529,7 +965,7 @@
             // Set up canvas
             tempCanvas.width = frameWidth;
             tempCanvas.height = frameHeight;
-            const ctx = tempCanvas.getContext('2d');
+            const ctx = tempCanvas.getContext('2d', { willReadFrequently: true });
 
             // Show status and progress
             clearTimeout(statusHideTimeout);
@@ -540,6 +976,7 @@
             generateBtn.disabled = true;
             frameGrid.innerHTML = '';
             framePreview.classList.remove('hidden');
+            resultContainer.classList.add('hidden');
 
             // Create GIF
             const gif = new GIF({
@@ -630,7 +1067,9 @@
 
             gif.on('finished', function(blob) {
                 // Display the GIF
+                if (generatedGifUrl) URL.revokeObjectURL(generatedGifUrl);
                 const url = URL.createObjectURL(blob);
+                generatedGifUrl = url;
                 gifOutput.src = url;
                 downloadLink.href = url;
                 downloadLink.download = 'sprite-animation.gif';

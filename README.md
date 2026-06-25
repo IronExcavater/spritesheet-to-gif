@@ -31,6 +31,8 @@ npm run dev
 
 This serves the folder at `http://localhost:3000`. You can also skip npm entirely and just open `index.html` directly in a browser, or serve the folder with any static file server.
 
+In VS Code, run the **Run Sprite Sheet to GIF** launch configuration. It starts `npm run dev` automatically and opens Chrome with source debugging enabled.
+
 ## Scripts
 
 - `npm run dev` — serve the site locally at `http://localhost:3000`
